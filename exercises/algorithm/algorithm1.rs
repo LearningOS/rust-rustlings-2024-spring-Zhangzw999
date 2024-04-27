@@ -68,14 +68,53 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+
+	pub fn merge(mut list_a:LinkedList<T>, mut list_b:LinkedList<T>) -> Self
+    where
+        T: std::cmp::PartialOrd + Copy // 比较和复制
 	{
 		//TODO
-		Self {
+        let len_a: i32 = list_a.length as i32;
+        let len_b: i32 = list_b.length as i32;
+        
+		let mut res = Self {
             length: 0,
             start: None,
             end: None,
+        };
+
+        let (mut ia, mut ib): (i32, i32) = (0, 0);
+        while ia < len_a || ib < len_b {
+            let a_now = list_a.get(ia);
+            let b_now = list_b.get(ib);
+            // 从表头开始直接对Node操作
+            match (a_now, b_now) {
+                // 以下分类讨论，一旦出现None就不用对这个数组再操作下去了
+                (Some(a), Some(b)) => {
+                    // 两者均未到最后则照常归并
+                    if ia < len_a && ib < len_b && a_now < b_now { 
+                        // 当ib == len_b时，b_next应为None
+                        res.add(*a);
+                        ia += 1;
+                    } else {
+                        res.add(*b);
+                        ib += 1;
+                    }
+                }
+                (Some(a), None) => {
+                    res.add(*a);
+                    ia += 1;
+                }
+                (None, Some(b)) => {
+                    res.add(*b);
+                    ib += 1;
+                }
+                (None, None) => {
+                    return res;
+                }
+            }
         }
+        res
 	}
 }
 
