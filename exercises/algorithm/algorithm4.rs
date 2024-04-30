@@ -97,7 +97,6 @@ where
             },
             Ordering::Greater => {
                 match &mut self.right {
-                    // 左侧没有节点时创建储存value的新节点，否则在下一级递归调用insert，直到没有节点为止
                     Some(right) => right.insert(value),
                     None => {
                         self.right = Some(Box::new(TreeNode::new(value)));
